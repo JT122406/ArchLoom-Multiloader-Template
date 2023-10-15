@@ -28,7 +28,8 @@ loom {
         mixinConfig("example.mixins.json")
     }
 
-    runs.create("data") {
+    // Forge Datagen Gradle config.  Remove if not using Forge datagen
+    runs.create("datagen") {
         data()
         programArgs("--all", "--mod", "examplemod")
         programArgs("--output", project(":common").file("src/main/generated/resources").absolutePath)

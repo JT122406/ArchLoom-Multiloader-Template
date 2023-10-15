@@ -19,6 +19,8 @@ configurations {
 
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
+
+    // Fabric Datagen Gradle config.  Remove if not using Fabric datagen
     runs.create("datagen") {
         server()
         name("Data Generation")
