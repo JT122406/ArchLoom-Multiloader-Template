@@ -25,7 +25,7 @@ loom {
         extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
 
         mixinConfig("examplemod-common.mixins.json")
-        mixinConfig("example.mixins.json")
+        mixinConfig("examplemod.mixins.json")
     }
 
     // Forge Datagen Gradle config.  Remove if not using Forge datagen
