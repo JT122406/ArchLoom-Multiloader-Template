@@ -14,6 +14,6 @@ gradleEnterprise.buildScan {
     termsOfServiceAgree = "yes"
 }
 
-include("common", "fabric", "forge")
+include("common", "fabric", "forge", "quilt")
 
 rootProject.name = "ExampleMod"
