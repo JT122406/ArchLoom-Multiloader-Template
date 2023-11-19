@@ -3,8 +3,8 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 plugins {
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "1.4-SNAPSHOT" apply false
-    idea
     java
+    idea
 }
 
 val minecraftVersion = project.properties["minecraft_version"] as String
@@ -20,6 +20,9 @@ subprojects {
         mavenCentral()
         mavenLocal()
         maven("https://maven.parchmentmc.org")
+        maven("https://maven.fabricmc.net/")
+        maven("https://maven.minecraftforge.net/")
+        maven("https://maven.neoforged.net/releases/")
     }
 
     @Suppress("UnstableApiUsage")

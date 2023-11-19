@@ -2,6 +2,7 @@ pluginManagement.repositories {
     maven("https://maven.fabricmc.net/")
     maven("https://maven.architectury.dev/")
     maven("https://maven.minecraftforge.net/")
+    maven("https://maven.neoforged.net/releases/")
     gradlePluginPortal()
 }
 
@@ -14,6 +15,6 @@ gradleEnterprise.buildScan {
     termsOfServiceAgree = "yes"
 }
 
-include("common", "fabric", "forge")
+include("common", "fabric", "forge", "neoforge")
 
 rootProject.name = "ExampleMod"
