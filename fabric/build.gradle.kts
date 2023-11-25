@@ -78,7 +78,7 @@ components {
 }
 
 publishing {
-    publications.create<MavenPublication>("mavenCommon") {
+    publications.create<MavenPublication>("mavenFabric") {
         artifactId = "${project.properties["archives_base_name"]}" + "-Fabric"
         from(components["java"])
     }

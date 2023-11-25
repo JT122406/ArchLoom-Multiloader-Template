@@ -75,7 +75,7 @@ components {
 }
 
 publishing {
-    publications.create<MavenPublication>("mavenCommon") {
+    publications.create<MavenPublication>("mavenNeoForge") {
         artifactId = "${project.properties["archives_base_name"]}" + "-NeoForge"
         from(components["java"])
     }

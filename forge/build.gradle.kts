@@ -82,7 +82,7 @@ components {
 }
 
 publishing {
-    publications.create<MavenPublication>("mavenCommon") {
+    publications.create<MavenPublication>("mavenForge") {
         artifactId = "${project.properties["archives_base_name"]}" + "-Forge"
         from(components["java"])
     }
