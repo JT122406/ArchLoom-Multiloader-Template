@@ -19,18 +19,10 @@ configurations {
 
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
-
-    // Fabric Datagen Gradle config.  Remove if not using Fabric datagen
-    runs.create("datagen") {
-        server()
-        name("Data Generation")
-        vmArg("-Dfabric-api.datagen")
-        vmArg("-Dfabric-api.datagen.output-dir=${project(":common").file("src/main/generated/resources").absolutePath}")
-        vmArg("-Dfabric-api.datagen.modid=examplemod")
-
-        runDir("build/datagen")
-    }
 }
+
+// Fabric Datagen Gradle config.  Remove if not using Fabric datagen
+fabricApi.configureDataGeneration()
 
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
@@ -78,7 +70,7 @@ components {
 }
 
 publishing {
-    publications.create<MavenPublication>("mavenCommon") {
+    publications.create<MavenPublication>("mavenFabric") {
         artifactId = "${project.properties["archives_base_name"]}" + "-Fabric"
         from(components["java"])
     }
