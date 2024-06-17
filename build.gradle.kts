@@ -29,10 +29,12 @@ subprojects {
     @Suppress("UnstableApiUsage")
     dependencies {
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
+        "mappings"(loom.officialMojangMappings())
+        /*
         "mappings"(loom.layered{
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-$minecraftVersion:${project.properties["parchment"]}@zip")
-        })
+        }) */
 
         compileOnly("org.jetbrains:annotations:24.1.0")
     }

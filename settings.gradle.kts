@@ -7,12 +7,12 @@ pluginManagement.repositories {
 }
 
 plugins {
-    `gradle-enterprise`
+    id("com.gradle.develocity") version("3.17.5")
 }
 
-gradleEnterprise.buildScan {
-    termsOfServiceUrl = "https://gradle.com/terms-of-service"
-    termsOfServiceAgree = "yes"
+develocity.buildScan {
+    termsOfUseUrl = "https://gradle.com/terms-of-service"
+    termsOfUseAgree = "yes"
 }
 
 include("common", "fabric", "forge", "neoforge")
