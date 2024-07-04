@@ -38,7 +38,9 @@ loom {
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:$minecraftVersion-${project.properties["forge_version"]}")
+    if ((project.properties["use_neoforge"] as String).toBoolean())
+        forge("net.neoforged:forge:$minecraftVersion-${project.properties["neoforge_version"]}")
+    else forge("net.minecraftforge:forge:$minecraftVersion-${project.properties["forge_version"]}")
 
     "common"(project(":common", "namedElements")) { isTransitive = false }
     "shadowCommon"(project(":common", "transformProductionForge")) { isTransitive = false }
