@@ -3,16 +3,26 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 plugins {
     id("architectury-plugin") version "3.4-SNAPSHOT"
     id("dev.architectury.loom") version "1.7-SNAPSHOT" apply false
+    id("com.github.johnrengelman.shadow") version "8.1.1" apply false
     java
     idea
+    `maven-publish`
 }
 
 val minecraftVersion = project.properties["minecraft_version"] as String
-
 architectury.minecraft = minecraftVersion
+
+allprojects {
+    version = project.properties["mod_version"] as String
+    group = project.properties["maven_group"] as String
+}
 
 subprojects {
     apply(plugin = "dev.architectury.loom")
+    apply(plugin = "architectury-plugin")
+    apply(plugin = "maven-publish")
+
+    base.archivesName.set(project.properties["archives_base_name"] as String + "-${project.name}")
 
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
     loom.silentMojangMappingsLicense()
@@ -36,23 +46,36 @@ subprojects {
 
         compileOnly("org.jetbrains:annotations:24.1.0")
     }
-}
 
-allprojects {
-    apply(plugin = "java")
-    apply(plugin = "architectury-plugin")
-    apply(plugin = "maven-publish")
-    apply(plugin = "idea")
+    java {
+        withSourcesJar()
 
-    version = project.properties["mod_version"] as String
-    group = project.properties["maven_group"] as String
-    base.archivesName.set(project.properties["archives_base_name"] as String)
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
 
     tasks.withType<JavaCompile>().configureEach {
-        options.encoding = "UTF-8"
         options.release.set(17)
     }
 
-    java.withSourcesJar()
-}
+    publishing {
+        publications.create<MavenPublication>("mavenJava") {
+            artifactId = base.archivesName.get()
+            from(components["java"])
+        }
 
+        repositories {
+            mavenLocal()
+            maven {
+                val releasesRepoUrl = "https://example.com/releases"
+                val snapshotsRepoUrl = "https://example.com/snapshots"
+                url = uri(if (project.version.toString().endsWith("SNAPSHOT") || project.version.toString().startsWith("0")) snapshotsRepoUrl else releasesRepoUrl)
+                name = "ExampleRepo"
+                credentials {
+                    username = project.properties["repoLogin"]?.toString()
+                    password = project.properties["repoPassword"]?.toString()
+                }
+            }
+        }
+    }
+}
