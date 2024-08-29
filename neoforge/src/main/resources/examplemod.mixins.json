@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.example.examplemod.forge.mixin",
+  "package": "com.example.examplemod.neoforge.mixin",
   "compatibilityLevel": "JAVA_21",
   "minVersion": "0.8",
   "client": [

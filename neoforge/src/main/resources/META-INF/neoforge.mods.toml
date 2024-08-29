@@ -1,0 +1,31 @@
+modLoader = "javafml"
+loaderVersion = "[4,)"
+#issueTrackerURL = ""
+license = "Insert License Here"
+
+[[mods]]
+modId = "examplemod"
+version = "${version}"
+displayName = "Example Mod"
+authors = "Me!"
+description = '''
+This is an example description! Tell everyone what your mod is about!
+'''
+#logoFile = ""
+
+[[dependencies.example_mod]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.example_mod]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.21,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[mixins]]
+config = "examplemod.mixins.json"

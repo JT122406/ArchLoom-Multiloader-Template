@@ -4,7 +4,7 @@ plugins {
 
 architectury {
     platformSetupLoomIde()
-    forge()
+    neoForge()
 }
 
 val minecraftVersion = project.properties["minecraft_version"] as String
@@ -18,7 +18,7 @@ configurations {
     create("shadowBundle")
     compileClasspath.get().extendsFrom(configurations["common"])
     runtimeClasspath.get().extendsFrom(configurations["common"])
-    getByName("developmentForge").extendsFrom(configurations["common"])
+    getByName("developmentNeoForge").extendsFrom(configurations["common"])
     "shadowBundle" {
         isCanBeResolved = true
         isCanBeConsumed = false
@@ -28,15 +28,7 @@ configurations {
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
-    forge {
-        convertAccessWideners.set(true)
-        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-
-        mixinConfig("examplemod-common.mixins.json")
-        mixinConfig("examplemod.mixins.json")
-    }
-
-    // Forge Datagen Gradle config.  Remove if not using Forge datagen
+    // NeoForge Datagen Gradle config.  Remove if not using NeoForge datagen
     runs.create("datagen") {
         data()
         programArgs("--all", "--mod", "examplemod")
@@ -46,23 +38,23 @@ loom {
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:$minecraftVersion-${project.properties["forge_version"]}")
+    neoForge("net.neoforged:neoforge:${project.properties["neoforge_version"]}")
 
     "common"(project(":common", "namedElements")) { isTransitive = false }
-    "shadowBundle"(project(":common", "transformProductionForge"))
+    "shadowBundle"(project(":common", "transformProductionNeoForge"))
 }
 
 tasks {
     processResources {
         inputs.property("version", project.version)
 
-        filesMatching("META-INF/mods.toml") {
+        filesMatching("META-INF/neoforge.mods.toml") {
             expand(mapOf("version" to project.version))
         }
     }
 
     shadowJar {
-        exclude("architectury.common.json", "com/example/examplemod/forge/datagen/**")
+        exclude("architectury.common.json", "com/example/examplemod/neoforge/datagen/**")
         configurations = listOf(project.configurations.getByName("shadowBundle"))
         archiveClassifier.set("dev-shadow")
     }
@@ -71,8 +63,4 @@ tasks {
         inputFile.set(shadowJar.get().archiveFile)
         dependsOn(shadowJar)
     }
-}
-
-configurations.configureEach {
-    resolutionStrategy.force("net.sf.jopt-simple:jopt-simple:5.0.4")
 }

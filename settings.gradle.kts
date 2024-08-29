@@ -15,6 +15,6 @@ develocity.buildScan {
     termsOfUseAgree = "yes"
 }
 
-include("common", "fabric", "forge")
+include("common", "fabric", "forge", "neoforge")
 
 rootProject.name = "ExampleMod"
