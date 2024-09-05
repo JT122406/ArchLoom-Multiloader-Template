@@ -62,5 +62,6 @@ tasks {
     remapJar {
         inputFile.set(shadowJar.get().archiveFile)
         dependsOn(shadowJar)
+        atAccessWideners.add("examplemod.accesswidener")
     }
 }
