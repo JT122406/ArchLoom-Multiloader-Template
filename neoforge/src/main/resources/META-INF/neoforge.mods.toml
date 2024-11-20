@@ -13,14 +13,14 @@ This is an example description! Tell everyone what your mod is about!
 '''
 #logoFile = ""
 
-[[dependencies.example_mod]]
+[[dependencies.examplemod]]
 modId = "neoforge"
 type = "required"
 versionRange = "[21.1,)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.example_mod]]
+[[dependencies.examplemod]]
 modId = "minecraft"
 type = "required"
 versionRange = "[1.21,)"
