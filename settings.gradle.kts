@@ -7,7 +7,7 @@ pluginManagement.repositories {
 }
 
 plugins {
-    id("com.gradle.develocity") version("3.18.2")
+    id("com.gradle.develocity") version("3.19.1")
 }
 
 develocity.buildScan {
