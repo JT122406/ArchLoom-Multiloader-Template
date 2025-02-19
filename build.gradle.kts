@@ -27,6 +27,12 @@ subprojects {
     val loom = project.extensions.getByName<LoomGradleExtensionAPI>("loom")
     loom.silentMojangMappingsLicense()
 
+    if (javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
+        loom.runs.forEach {
+            it.vmArg("-XX:+AllowEnhancedClassRedefinition")
+        }
+    }
+
     repositories {
         mavenCentral()
         mavenLocal()
