@@ -43,6 +43,18 @@ loom {
         programArgs("--output", project(":common").file("src/main/generated/resources").absolutePath)
         programArgs("--existing", project(":common").file("src/main/resources").absolutePath)
     }
+
+    // Enables Mixin Hot Swap
+    afterEvaluate {
+        val get = configurations.runtimeClasspath.get()
+
+        get.allDependencies.first { it.name.equals("mixin-patched", true) }.let { dependency ->
+            val javaAgentFile = get.resolvedConfiguration.firstLevelModuleDependencies.first { it.moduleName == dependency.name }.moduleArtifacts.first { it.type == "jar" }.file
+            runs.forEach {
+                it.vmArg("-javaagent:$javaAgentFile")
+            }
+        }
+    }
 }
 
 dependencies {
