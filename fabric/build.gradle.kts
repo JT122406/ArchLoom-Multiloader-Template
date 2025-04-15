@@ -31,6 +31,20 @@ loom.accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 // Fabric Datagen Gradle config.  Remove if not using Fabric datagen
 fabricApi.configureDataGeneration()
 
+loom {
+    // Enables Mixin Hot Swap
+    afterEvaluate {
+        val get = configurations.runtimeClasspath.get()
+
+        get.allDependencies.first { it.name.equals("sponge-mixin", true) }.let { dependency ->
+            val javaAgentFile = get.resolvedConfiguration.firstLevelModuleDependencies.first { it.moduleName == dependency.name }.moduleArtifacts.first { it.type == "jar" }.file
+            runs.forEach {
+                it.vmArg("-javaagent:$javaAgentFile")
+            }
+        }
+    }
+}
+
 dependencies {
     modImplementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
     modApi("net.fabricmc.fabric-api:fabric-api:${project.properties["fabric_api_version"]}+$minecraftVersion")
