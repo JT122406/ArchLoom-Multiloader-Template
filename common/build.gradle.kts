@@ -3,12 +3,12 @@ architectury {
     platformSetupLoomIde()
 }
 
-val minecraftVersion = project.properties["minecraft_version"] as String
+val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 loom.accessWidenerPath.set(file("src/main/resources/examplemod.accesswidener"))
 
 sourceSets.main.get().resources.srcDir("src/main/generated/resources")
 
 dependencies {
-    modImplementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
+    modImplementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
 }

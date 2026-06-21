@@ -7,7 +7,7 @@ architectury {
     forge()
 }
 
-val minecraftVersion = project.properties["minecraft_version"] as String
+val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
     create("common")
@@ -46,7 +46,7 @@ loom {
 }
 
 dependencies {
-    forge("net.minecraftforge:forge:$minecraftVersion-${project.properties["forge_version"]}")
+    forge("net.minecraftforge:forge:$minecraftVersion-${providers.gradleProperty("forge_version").get()}")
 
     "common"(project(":common", "namedElements")) { isTransitive = false }
     "shadowBundle"(project(":common", "transformProductionForge"))

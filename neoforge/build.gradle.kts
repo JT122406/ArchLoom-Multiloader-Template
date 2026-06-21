@@ -7,7 +7,7 @@ architectury {
     neoForge()
 }
 
-val minecraftVersion = project.properties["minecraft_version"] as String
+val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
     create("common")
@@ -38,7 +38,7 @@ loom {
 }
 
 dependencies {
-    neoForge("net.neoforged:neoforge:${project.properties["neoforge_version"]}")
+    neoForge("net.neoforged:neoforge:${providers.gradleProperty("neoforge_version").get()}")
 
     "common"(project(":common", "namedElements")) { isTransitive = false }
     "shadowBundle"(project(":common", "transformProductionNeoForge"))

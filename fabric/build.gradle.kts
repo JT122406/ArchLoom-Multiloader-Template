@@ -7,7 +7,7 @@ architectury {
     fabric()
 }
 
-val minecraftVersion = project.properties["minecraft_version"] as String
+val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
     create("common")
@@ -32,8 +32,8 @@ loom.accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 fabricApi.configureDataGeneration()
 
 dependencies {
-    modImplementation("net.fabricmc:fabric-loader:${project.properties["fabric_loader_version"]}")
-    modApi("net.fabricmc.fabric-api:fabric-api:${project.properties["fabric_api_version"]}+$minecraftVersion")
+    modImplementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
+    modApi("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}+$minecraftVersion")
 
     "common"(project(":common", "namedElements")) { isTransitive = false }
     "shadowBundle"(project(":common", "transformProductionFabric"))
