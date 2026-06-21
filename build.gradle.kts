@@ -5,7 +5,6 @@ plugins {
     id("dev.architectury.loom") version "1.17-SNAPSHOT" apply false
     id("com.gradleup.shadow") version "9.4.2" apply false
     java
-    idea
     `maven-publish`
 }
 
