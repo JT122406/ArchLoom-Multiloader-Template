@@ -9,7 +9,8 @@
   ],
   "contact": {
     "homepage": "https://fabricmc.net/",
-    "sources": ""
+    "sources": "",
+    "issues": ""
   },
   "license": "Insert License Here",
   "icon": "assets/examplemod/icon.png",
@@ -28,6 +29,6 @@
   ],
   "depends": {
     "fabric": "*",
-    "minecraft": ">=1.21.8"
+    "minecraft": ">=26.1"
   }
 }

@@ -2,8 +2,8 @@ import net.fabricmc.loom.api.LoomGradleExtensionAPI
 
 plugins {
     id("architectury-plugin") version "3.5-SNAPSHOT"
-    id("dev.architectury.loom") version "1.17-SNAPSHOT" apply false
-    id("com.gradleup.shadow") version "9.4.2" apply false
+    id("dev.architectury.loom-no-remap") version "1.17-SNAPSHOT" apply false
+    id("com.gradleup.shadow") version "9.6.1" apply false
     java
     `maven-publish`
 }
@@ -17,7 +17,7 @@ allprojects {
 }
 
 subprojects {
-    pluginManager.apply("dev.architectury.loom")
+    pluginManager.apply("dev.architectury.loom-no-remap")
     pluginManager.apply("architectury-plugin")
     pluginManager.apply("maven-publish")
 
@@ -29,32 +29,24 @@ subprojects {
     repositories {
         mavenCentral()
         mavenLocal()
-        maven("https://maven.parchmentmc.org")
         maven("https://maven.fabricmc.net/")
         maven("https://maven.minecraftforge.net/")
         maven("https://maven.neoforged.net/releases/")
     }
 
-    @Suppress("UnstableApiUsage")
     dependencies {
         "minecraft"("com.mojang:minecraft:$minecraftVersion")
-        "mappings"(loom.layered{
-            officialMojangMappings()
-            parchment("org.parchmentmc.data:parchment-$minecraftVersion:${providers.gradleProperty("parchment").get()}@zip")
-        })
-
-        compileOnly("org.jetbrains:annotations:26.1.0")
     }
 
     java {
         withSourcesJar()
 
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_25
+        targetCompatibility = JavaVersion.VERSION_25
     }
 
     tasks.withType<JavaCompile>().configureEach {
-        options.release.set(21)
+        options.release.set(25)
     }
 
     publishing {

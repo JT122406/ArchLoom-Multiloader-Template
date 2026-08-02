@@ -10,46 +10,37 @@ architectury {
 val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
-    create("common")
-    "common" {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-    }
-    create("shadowBundle")
-    compileClasspath.get().extendsFrom(configurations["common"])
-    runtimeClasspath.get().extendsFrom(configurations["common"])
-    getByName("developmentForge").extendsFrom(configurations["common"])
-    "shadowBundle" {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-    }
+    val common = register("common")
+    register("shadowCommon")
+    compileClasspath.get().extendsFrom(common.get())
+    runtimeClasspath.get().extendsFrom(common.get())
+    named("developmentForge") { extendsFrom(common.get()) }
 }
 
 loom {
     accessWidenerPath.set(project(":common").loom.accessWidenerPath)
 
     forge {
-        convertAccessWideners.set(true)
-        extraAccessWideners.add(loom.accessWidenerPath.get().asFile.name)
-
-        mixinConfig("examplemod-common.mixins.json")
-        mixinConfig("examplemod.mixins.json")
+        convertAccessWideners(tasks.shadowJar, "examplemod.accesswidener")
+        mixinConfigs.set(listOf("examplemod.mixins.json", "examplemod-common.mixins.json"))
     }
 
     // Forge Datagen Gradle config.  Remove if not using Forge datagen
     runs.create("datagen") {
         data()
-        programArgs("--all", "--mod", "examplemod")
-        programArgs("--output", project(":common").file("src/main/generated/resources").absolutePath)
-        programArgs("--existing", project(":common").file("src/main/resources").absolutePath)
+        programArguments.addAll(
+            "--all", "--mod", "examplemod",
+            "--output", project(":common").file("src/main/generated/resources").absolutePath,
+            "--existing", project(":common").file("src/main/resources").absolutePath
+        )
     }
 }
 
 dependencies {
     forge("net.minecraftforge:forge:$minecraftVersion-${providers.gradleProperty("forge_version").get()}")
 
-    "common"(project(":common", "namedElements")) { isTransitive = false }
-    "shadowBundle"(project(":common", "transformProductionForge"))
+    "common"(project(":common")) { isTransitive = false }
+    "shadowCommon"(project(":common", "transformProductionForge"))
 }
 
 tasks {
@@ -61,14 +52,13 @@ tasks {
         }
     }
 
-    shadowJar {
-        exclude("architectury.common.json", "com/example/examplemod/forge/datagen/**")
-        configurations = listOf(project.configurations.getByName("shadowBundle"))
-        archiveClassifier.set("dev-shadow")
-    }
+    jar.get().archiveClassifier.set("raw")
 
-    remapJar {
-        inputFile.set(shadowJar.get().archiveFile)
-        dependsOn(shadowJar)
+    shadowJar {
+        dependsOn(jar)
+        from(zipTree(jar.get().archiveFile))
+        exclude("architectury.common.json", ".cache/**", "com/example/examplemod/forge/datagen/**")
+        configurations = listOf(project.configurations.getByName("shadowCommon"))
+        archiveClassifier.set(null)
     }
 }

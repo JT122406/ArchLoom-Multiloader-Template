@@ -10,19 +10,11 @@ architectury {
 val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
-    create("common")
-    "common" {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-    }
-    create("shadowBundle")
-    compileClasspath.get().extendsFrom(configurations["common"])
-    runtimeClasspath.get().extendsFrom(configurations["common"])
-    getByName("developmentNeoForge").extendsFrom(configurations["common"])
-    "shadowBundle" {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-    }
+    val common = register("common")
+    register("shadowCommon")
+    compileClasspath.get().extendsFrom(common.get())
+    runtimeClasspath.get().extendsFrom(common.get())
+    named("developmentNeoForge") { extendsFrom(common.get()) }
 }
 
 loom {
@@ -31,17 +23,21 @@ loom {
     // NeoForge Datagen Gradle config.  Remove if not using NeoForge datagen
     runs.create("datagen") {
         data()
-        programArgs("--all", "--mod", "examplemod")
-        programArgs("--output", project(":common").file("src/main/generated/resources").absolutePath)
-        programArgs("--existing", project(":common").file("src/main/resources").absolutePath)
+        programArguments.addAll(
+            "--all", "--mod", "examplemod",
+            "--output", project(":common").file("src/main/generated/resources").absolutePath,
+            "--existing", project(":common").file("src/main/resources").absolutePath
+        )
     }
+
+    neoForge.convertAccessWideners(tasks.shadowJar, "examplemod.accesswidener")
 }
 
 dependencies {
     neoForge("net.neoforged:neoforge:${providers.gradleProperty("neoforge_version").get()}")
 
-    "common"(project(":common", "namedElements")) { isTransitive = false }
-    "shadowBundle"(project(":common", "transformProductionNeoForge"))
+    "common"(project(":common")) { isTransitive = false }
+    "shadowCommon"(project(":common", "transformProductionNeoForge"))
 }
 
 tasks {
@@ -53,15 +49,13 @@ tasks {
         }
     }
 
-    shadowJar {
-        exclude("architectury.common.json", "com/example/examplemod/neoforge/datagen/**")
-        configurations = listOf(project.configurations.getByName("shadowBundle"))
-        archiveClassifier.set("dev-shadow")
-    }
+    jar.get().archiveClassifier.set("raw")
 
-    remapJar {
-        inputFile.set(shadowJar.get().archiveFile)
-        dependsOn(shadowJar)
-        atAccessWideners.add("examplemod.accesswidener")
+    shadowJar {
+        dependsOn(jar)
+        from(zipTree(jar.get().archiveFile))
+        exclude("architectury.common.json", "com/example/examplemod/neoforge/datagen/**", ".cache/**")
+        configurations = listOf(project.configurations.getByName("shadowCommon"))
+        archiveClassifier.set(null)
     }
 }

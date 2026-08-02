@@ -10,33 +10,24 @@ architectury {
 val minecraftVersion = providers.gradleProperty("minecraft_version").get()
 
 configurations {
-    create("common")
-    "common" {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-    }
-    create("shadowBundle")
-    compileClasspath.get().extendsFrom(configurations["common"])
-    runtimeClasspath.get().extendsFrom(configurations["common"])
-    getByName("developmentFabric").extendsFrom(configurations["common"])
-    "shadowBundle" {
-        isCanBeResolved = true
-        isCanBeConsumed = false
-    }
+    val common = register("common")
+    register("shadowCommon")
+    compileClasspath.get().extendsFrom(common.get())
+    runtimeClasspath.get().extendsFrom(common.get())
+    named("developmentFabric") { extendsFrom(common.get()) }
 }
 
 loom.accessWidenerPath.set(project(":common").loom.accessWidenerPath)
-
 
 // Fabric Datagen Gradle config.  Remove if not using Fabric datagen
 fabricApi.configureDataGeneration()
 
 dependencies {
-    modImplementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
-    modApi("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}+$minecraftVersion")
+    implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
+    api("net.fabricmc.fabric-api:fabric-api:${providers.gradleProperty("fabric_api_version").get()}+$minecraftVersion")
 
-    "common"(project(":common", "namedElements")) { isTransitive = false }
-    "shadowBundle"(project(":common", "transformProductionFabric"))
+    "common"(project(":common")) { isTransitive = false }
+    "shadowCommon"(project(":common", "transformProductionFabric"))
 }
 
 tasks {
@@ -48,15 +39,13 @@ tasks {
         }
     }
 
-    shadowJar {
-        exclude("architectury.common.json", "com/example/examplemod/fabric/datagen/**")
-        configurations = listOf(project.configurations.getByName("shadowBundle"))
-        archiveClassifier.set("dev-shadow")
-    }
+    jar.get().archiveClassifier.set("raw")
 
-    remapJar {
-        injectAccessWidener.set(true)
-        inputFile.set(shadowJar.get().archiveFile)
-        dependsOn(shadowJar)
+    shadowJar {
+        dependsOn(jar)
+        from(zipTree(jar.get().archiveFile))
+        exclude("architectury.common.json", "com/example/examplemod/fabric/datagen/**")
+        configurations = listOf(project.configurations.getByName("shadowCommon"))
+        archiveClassifier.set(null)
     }
 }

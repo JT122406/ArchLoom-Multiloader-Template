@@ -10,5 +10,5 @@ loom.accessWidenerPath.set(file("src/main/resources/examplemod.accesswidener"))
 sourceSets.main.get().resources.srcDir("src/main/generated/resources")
 
 dependencies {
-    modImplementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
+    implementation("net.fabricmc:fabric-loader:${providers.gradleProperty("fabric_loader_version").get()}")
 }

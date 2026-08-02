@@ -16,14 +16,14 @@ This is an example description! Tell everyone what your mod is about!
 [[dependencies.examplemod]]
 modId = "neoforge"
 type = "required"
-versionRange = "[21.8,)"
+versionRange = "[26.1.0,)"
 ordering = "NONE"
 side = "BOTH"
 
 [[dependencies.examplemod]]
 modId = "minecraft"
 type = "required"
-versionRange = "[1.21,)"
+versionRange = "[26.1,)"
 ordering = "NONE"
 side = "BOTH"
 
